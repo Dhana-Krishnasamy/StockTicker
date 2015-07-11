@@ -1,0 +1,16 @@
+<div class="p5">
+    <div>
+        <lable for="startDate">Start Date:</lable>
+        <input id="startDate" type="date" ng-model="from" placeholder="dd/mm/yyyy format">
+        <lable for="toDate">To Date:</lable>
+        <input id="toDate" type="date" ng-model="to" placeholder="dd/mm/yyyy format">
+        <button ng-click="loadHistorical()" class="btn btn-sm btn-primary">Load</button>
+    </div>
+    <div ng-repeat="tick in ticks" class="p5">
+        <div><label>Tick:</label>
+            <input type="text" ng-model="tick.name">
+        </div>
+        <svg historical-chart class="chart" value="tick.prices"></svg>
+    </div>
+
+</div>

@@ -1,0 +1,27 @@
+
+<div ng-repeat="stock in stocks" class="p5">
+    <div>
+        <label>Tick:</label>
+        <input type="text" ng-model="stock.name">
+    </div>
+    <svg realtime-chart start-date='{{$parent.startDate}}' value="stock.cache" on-update="stock.onUpdate()"></svg>
+
+
+</div>
+<div  class="p5">
+    <table class="table">
+        <thead>
+            <tr><th>Stock</th><th>Time</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="stock in stocks">
+                <td>{{stock.name}}</td>
+                <td>{{stock.last.Date| date : 'h:mm:ss sss'}}</td>
+                <td>{{stock.last.High| number:4}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>
+

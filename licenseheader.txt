@@ -1,0 +1,14 @@
+<#if licenseFirst??>
+${licenseFirst}© Copyright Vasantham Technologies Limited 2015
+${licenseFirst}-----------------------------------------------
+</#if>
+${licensePrefix}This file and the source code contained herein are the property of Vasantham Technologies Limited 
+${licensePrefix}and are protected by English copyright law. All usage is restricted as per 
+${licensePrefix}the terms & conditions of Vasantham Technologies Limited. You may not alter or remove 
+${licensePrefix}any trademark, copyright or other notice from copies of the content.
+
+${licensePrefix}The code contained herein may not be reproduced, copied, modified or redistributed in any form
+${licensePrefix}without the express written consent by an officer of Vasantham Technologies Limited.
+<#if licenseLast??>
+${licenseLast}
+</#if>

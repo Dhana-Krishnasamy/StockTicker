@@ -1,0 +1,137 @@
+/* app css stylesheet */
+
+.menu {
+    list-style: none;
+    border-bottom: 0.1em solid black;
+    margin-bottom: 2em;
+    padding: 0 0 0.5em;
+}
+
+.menu:before {
+    content: "[";
+}
+
+.menu:after {
+    content: "]";
+}
+
+.menu > li {
+    display: inline;
+}
+
+.menu > li:before {
+    content: "|";
+    padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+    content: "";
+    padding: 0;
+}
+
+.p5{
+    padding:5px;
+}
+.chartArea {
+    padding:10px;
+    margin-top:5px;
+        
+}
+
+.chart{
+    /* border:1px solid lightgreen; */
+    /* min-width: 10px; */
+    /* min-height: 10px; */
+}
+.chart div {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 1px;
+    color: white;
+}
+
+svg.chart {
+
+}
+.chart rect {
+    fill: steelblue;
+}
+
+.chart text {
+    fill: red;
+    font: 10px sans-serif;
+    text-anchor: end;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.axis text {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+rect.canvas {
+    fill:lightgray;
+}
+#tooltip {
+    position: absolute;
+    width: 200px;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+#tooltip.hidden {
+    display: none;
+}
+
+#tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+}
+svg line.line{
+    stroke:steelblue;
+    stroke-width:2
+}
+rect.line {
+    fill:lightgray;
+}
+
+div.dot{
+    position: absolute;
+    border-radius: 50%;
+    height:4px;
+    width:4px;
+    padding:4px;
+    background:steelblue;
+    pointer-events: none;
+}
+
+.priceLine path{
+    fill: none
+}
+.priceLine .high{
+    stroke-width:2;
+}
+.priceLine .low{
+    stroke-width:1;
+}
