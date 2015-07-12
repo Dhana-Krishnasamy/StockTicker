@@ -13,7 +13,7 @@
                 }])
             .controller('View2Ctrl', ['$scope', 'dataService', function ($scope, dataService) {
                     var format = d3.time.format("%Y-%m-%d %H:%M:%S.%L");
-                    var tickIntervel = 500, startDate = format.parse('2010-10-11 08:05:10.000').getTime();
+                    var tickIntervel = 500, startDate = format.parse('2010-10-11 08:00:10.000').getTime();
 
                     $scope.startDate = '2010-10-11';
                     $scope.stocks = [];
@@ -26,9 +26,9 @@
                         stock.onUpdate = drainQueue(stock);
                         stock.fillCallback = fillQueue(stock);
                         dataService.registerForTick(tick, stock.fillCallback);
-                        genInitData(stock.cache, 2);
-                        stock.last.High = stock.cache.slice(-1)[0].High;
-                        stock.last.Date = stock.cache.slice(-1)[0].Date;
+//                        genInitData(stock.cache, 2);
+//                        stock.last.High = stock.cache.slice(-1)[0].High;
+//                        stock.last.Date = stock.cache.slice(-1)[0].Date;
                         $scope.stocks.push(stock);
                     });
                     $scope.$on('$destroy', function () {
@@ -51,8 +51,11 @@
                     function fillQueue(_this) {
                         return function (data) {
                             data.forEach(function (d) {
+                                startDate = startDate + tickIntervel;
                                 _this.cache.push({
-                                    Date: format.parse($scope.startDate + ' ' + d.time),
+                                    //d.time
+                                    //Date: format.parse($scope.startDate + ' ' + (startDate +(500 * tickCount++))),
+                                    Date:new Date(startDate),
                                     High: d.high
                                 });
                             });
@@ -63,11 +66,11 @@
 
                     }
                     function genInitData(ticks, seed) {
-                        for (var i = 0; i < 50; i++) {
+                        for (var i = 0; i < 0; i++) {
                             startDate = startDate + tickIntervel;
                             ticks.push({
                                 Date: new Date(startDate),
-                                High: seed + Math.random()
+                                High: 20//seed + Math.random()
                             });
                         }
                     }

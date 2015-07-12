@@ -22,9 +22,9 @@
                         value: '=value',
                         update: '&onUpdate'
                     },
-                    link: function ($scope, iElm, iAttrs, controller) {
-                        var historicalChart = new RealtimeChart(iElm, $scope.startDate);
-                        historicalChart.init($scope.value, $scope.update);
+                    link: function ($scope, iElm) {
+                        var liveChart = new RealtimeChart(iElm, $scope.startDate);
+                        liveChart.init($scope.value, $scope.update);
                     }
                 };
             }
@@ -47,7 +47,7 @@
         })
                 .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         RealtimeChart.xScale = d3.time.scale().rangeRound([0, RealtimeChart.width]);
-        RealtimeChart.xScale.domain([format.parse(startDate + ' 08:09:00'), format.parse(startDate + ' 08:13:00')]);
+        RealtimeChart.xScale.domain([format.parse(startDate + ' 08:00:00'), format.parse(startDate + ' 08:10:00')]);
         RealtimeChart.yScale = d3.scale.linear().range([RealtimeChart.height, 0]);
         RealtimeChart.xAxis = d3.svg.axis().scale(RealtimeChart.xScale).orient("Bottom");
         RealtimeChart.yAxis = d3.svg.axis().scale(RealtimeChart.yScale).orient('left');
@@ -80,36 +80,45 @@
     }
     RealtimeChart.prototype.init = function (ticks, onUpdate) {
         var RealtimeChart = this;
-        updateYScale(ticks);
+        var lineG, lastTick;
+        var start = null;
+        var inProgress = false;
 
-        var lineG = RealtimeChart.canvas.selectAll('g.priceLine')
-                .data([ticks]);
-        var priceLine = lineG.enter().append('g')
-                .attr('class', 'priceLine');
-        priceLine.append("path")
-                .attr({
-                    "class": 'low',
-                    stroke: function (d, i) {
-                        return RealtimeChart.color(i);
-                    },
-                    d: RealtimeChart.HighPathGen
-                });
+        if (ticks && ticks.length > 0) {
+            updateYScale(ticks);
+            initPriceLine(ticks);
+            lastTick = ticks.slice(-1)[0];
+        }
 
-        var lastTick = ticks.slice(-1)[0];
         if (onUpdate)
             getUpdate(500);
 
+        function initPriceLine(ticks) {
+            lineG = RealtimeChart.canvas.selectAll('g.priceLine')
+                    .data([ticks]);
+            var priceLine = lineG.enter().append('g')
+                    .attr('class', 'priceLine');
+            priceLine.append("path")
+                    .attr({
+                        "class": 'low',
+                        stroke: function (d, i) {
+                            return RealtimeChart.color(i);
+                        },
+                        d: RealtimeChart.HighPathGen
+                    });
+        }
         function updateTick(newData) {
-            updateYScale(newData);
             var combinedPath = "";
+            if (!lineG)
+                initPriceLine(newData);
+            updateYScale(newData);
             var line = lineG.select('path.low');
             line.each(function () {
                 combinedPath += d3.select(this).attr("d");
             });
             line.attr("d", combinedPath + RealtimeChart.HighPathGen(newData));
         }
-        var start = null;
-        var inProgress = false;
+
         function getUpdate(next) {
             // setTimeout(function () {
             if (!inProgress) {
@@ -122,7 +131,8 @@
                     //console.log(progress);
                     var ticks = onUpdate();
                     if (ticks && ticks.length > 0) {
-                        ticks.unshift(lastTick);
+                        if (lastTick)
+                            ticks.unshift(lastTick);
                         updateTick(ticks);
                         lastTick = ticks.slice(-1)[0] || lastTick;
                     }
