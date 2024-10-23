@@ -28,7 +28,7 @@ and open the template in the editor.
         <!-- see the example of method invoking job above -->
         <property name="jobDetail" ref="jobDetail"/>
         <property name="startDelay" value="1000"/>
-        <property name="repeatInterval" value="2000"/>
+        <property name="repeatInterval" value="100"/>
     </bean>
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">

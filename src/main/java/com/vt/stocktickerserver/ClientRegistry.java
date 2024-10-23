@@ -10,57 +10,53 @@
  */
 package com.vt.stocktickerserver;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.websocket.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.websocket.Session;
+
 /**
- *
  * @author Dhana
  */
 //@Singleton
 public class ClientRegistry {
 
     private final static Logger l = LoggerFactory.getLogger(ClientRegistry.class.getSimpleName());
-    private final ConcurrentHashMap<Session, List<String>> sessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CopyOnWriteArrayList<Session>> tickToSessionMap = new ConcurrentHashMap<>();
 
     public void listenFor(String tick, Session session) {
-        sessions.putIfAbsent(session, Collections.synchronizedList(new LinkedList<String>()));
-        sessions.get(session).add(tick);
+        tickToSessionMap.putIfAbsent(tick, new CopyOnWriteArrayList<>());
+        tickToSessionMap.get(tick).add(session);
         l.info("added session for tick {}", tick);
     }
 
     public void removeListenerFor(String tick, Session session) {
-        sessions.get(session).remove(tick);
+        tickToSessionMap.get(tick).remove(session);
         l.info("removed tick {}", tick);
     }
 
     public void removeListener(Session session) {
-        sessions.remove(session);
+        tickToSessionMap.values().forEach(l -> l.remove(session));
         l.info("removed session {}", session);
     }
 
     public void publishData(String tick, Object data) {
-        if (sessions.isEmpty()) {
+        if (tickToSessionMap.isEmpty() || tickToSessionMap.get(tick) == null) {
             l.trace("no clients found");
             return;
         }
-        l.info("found {} clients ", sessions.size());
-        for (Map.Entry<Session, List<String>> entrySet : sessions.entrySet()) {
-            Session client = entrySet.getKey();
-            List<String> ticks = entrySet.getValue();
-            if (ticks.contains(tick)) {
-                client.getAsyncRemote().sendText(data.toString());
-                l.trace("publishing data for tick {}", tick);
-            }
+        //l.info("found {} symbols ", tickToSessionMap.size());
+        String dataString = data.toString();
+        tickToSessionMap.get(tick).forEach(session -> {
+            session.getAsyncRemote().sendText(dataString);
+        });
 
-        }
     }
 
     private static ClientRegistry _instance;
