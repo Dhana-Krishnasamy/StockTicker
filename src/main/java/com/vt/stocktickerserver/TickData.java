@@ -19,28 +19,30 @@ import java.util.List;
  */
 public class TickData {
 
-    private String tick;
-    private List<Tick> ticks;
+    private String symbol;
+    private double high;
+    private  double low;
+    private  long ts;
 
-    public TickData(String tick) {
-        this.tick = tick;
-        ticks = new LinkedList<>();
+    public TickData(String symbol, double high, double low, long ts) {
+        this.symbol = symbol;
+        this.high = high;
+        this.low = low;
+        this.ts = ts;
     }
 
-    public String getTick() {
-        return tick;
+    public String getSymbol() {
+        return symbol;
+    }
+    public double getHigh() {
+        return high;
     }
 
-    public void setTick(String tick) {
-        this.tick = tick;
+    public double getLow() {
+        return low;
     }
 
-    public List<Tick> getTicks() {
-        return ticks;
+    public long getTs() {
+        return ts;
     }
-
-    public void setTicks(List<Tick> ticks) {
-        this.ticks = ticks;
-    }
-
 }

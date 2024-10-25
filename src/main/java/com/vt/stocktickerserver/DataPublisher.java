@@ -10,6 +10,8 @@
  */
 package com.vt.stocktickerserver;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
@@ -18,10 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- *
  * @author Dhana
  */
 public class DataPublisher {
@@ -40,12 +40,11 @@ public class DataPublisher {
     public void publishTick() throws IOException {
         startTime += 500;
         ClientRegistry.getBean().publishData("msft", getTickData("msft", 21, 0.07f));
-        ClientRegistry.getBean().publishData("vod.l", getTickData("vod.l", 37, 0.13f));
+        ClientRegistry.getBean().publishData("vod.l", getTickData("vod.l", 37, 0.53f));
         ClientRegistry.getBean().publishData("ubs.l", getTickData("ubs.l", 67, 0.31f));
     }
 
     private StringWriter getTickData(String tick, float px, float factor) throws IOException {
-        TickData td = new TickData(tick);
         float lastPx = px;
         if (lastPxs.containsKey(tick)) {
             lastPx = lastPxs.get(tick);
@@ -53,9 +52,8 @@ public class DataPublisher {
         float delta = randNonZeroInt(-1, 1) * randNonZeroInt(-1, 1);
         float nextPx = Math.abs(lastPx + (delta * factor));
         lastPxs.put(tick, nextPx);
-        td.getTicks().add(new Tick(ft.format(new Date(startTime)), nextPx));
         StringWriter wr = new StringWriter();
-        mapper.writeValue(wr, td);
+        mapper.writeValue(wr, new TickData(tick, nextPx, nextPx, startTime));
         return wr;
     }
 
